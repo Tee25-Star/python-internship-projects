@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Online Quiz System</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <div class="welcome-card">
+            <div class="logo">
+                <svg width="80" height="80" viewBox="0 0 80 80" fill="none">
+                    <circle cx="40" cy="40" r="35" stroke="url(#gradient)" stroke-width="3" fill="none"/>
+                    <path d="M25 40 L35 50 L55 30" stroke="url(#gradient)" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+                    <defs>
+                        <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" style="stop-color:#667eea;stop-opacity:1" />
+                            <stop offset="100%" style="stop-color:#764ba2;stop-opacity:1" />
+                        </linearGradient>
+                    </defs>
+                </svg>
+            </div>
+            <h1 class="title">Online Quiz System</h1>
+            <p class="subtitle">Test your knowledge and challenge yourself!</p>
+            
+            <div class="quiz-info">
+                <div class="info-item">
+                    <span class="info-icon">📚</span>
+                    <div>
+                        <h3>{{ quiz_data.questions|length }} Questions</h3>
+                        <p>Comprehensive assessment</p>
+                    </div>
+                </div>
+                <div class="info-item">
+                    <span class="info-icon">⏱️</span>
+                    <div>
+                        <h3>{{ quiz_data.duration_minutes }} Minutes</h3>
+                        <p>Time to complete</p>
+                    </div>
+                </div>
+                <div class="info-item">
+                    <span class="info-icon">🎯</span>
+                    <div>
+                        <h3>Multiple Choice</h3>
+                        <p>Select the best answer</p>
+                    </div>
+                </div>
+            </div>
+            
+            <button class="start-btn" onclick="startQuiz()">
+                <span>Start Quiz</span>
+                <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
+                    <path d="M8 5v10l7-5z"/>
+                </svg>
+            </button>
+        </div>
+    </div>
+    
+    <script>
+        function startQuiz() {
+            window.location.href = '/quiz';
+        }
+    </script>
+</body>
+</html>

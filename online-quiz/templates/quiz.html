@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz - {{ quiz_data.quiz_name }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="quiz-container">
+        <div class="quiz-header">
+            <div class="quiz-title">
+                <h1>{{ quiz_data.quiz_name }}</h1>
+                <p class="question-counter">Question <span id="current-q">1</span> of <span id="total-q">{{ quiz_data.questions|length }}</span></p>
+            </div>
+            <div class="timer-container">
+                <div class="timer-circle">
+                    <svg class="timer-svg" viewBox="0 0 100 100">
+                        <defs>
+                            <linearGradient id="timerGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" style="stop-color:#667eea;stop-opacity:1" />
+                                <stop offset="100%" style="stop-color:#764ba2;stop-opacity:1" />
+                            </linearGradient>
+                        </defs>
+                        <circle class="timer-bg" cx="50" cy="50" r="45"></circle>
+                        <circle class="timer-progress" cx="50" cy="50" r="45" id="timer-circle"></circle>
+                    </svg>
+                    <div class="timer-text">
+                        <span id="timer-minutes">{{ quiz_data.duration_minutes }}</span>:<span id="timer-seconds">00</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="progress-bar">
+            <div class="progress-fill" id="progress-fill"></div>
+        </div>
+
+        <div class="quiz-content">
+            <div class="question-card" id="question-card">
+                <h2 class="question-text" id="question-text"></h2>
+                <div class="options-container" id="options-container"></div>
+            </div>
+
+            <div class="quiz-controls">
+                <button class="btn btn-secondary" id="prev-btn" onclick="previousQuestion()" disabled>
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                        <path d="M10 12L6 8l4-4"/>
+                    </svg>
+                    Previous
+                </button>
+                <div class="question-nav">
+                    <button class="nav-dot" id="nav-dot-1" onclick="goToQuestion(0)"></button>
+                </div>
+                <button class="btn btn-primary" id="next-btn" onclick="nextQuestion()">
+                    Next
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                        <path d="M6 12l4-4-4-4"/>
+                    </svg>
+                </button>
+            </div>
+
+            <button class="btn btn-submit" id="submit-btn" onclick="submitQuiz()" style="display: none;">
+                Submit Quiz
+            </button>
+        </div>
+    </div>
+
+    <div class="modal" id="results-modal" style="display: none;">
+        <div class="modal-content">
+            <div class="results-header">
+                <h2>Quiz Completed!</h2>
+                <div class="score-circle">
+                    <svg viewBox="0 0 120 120">
+                        <defs>
+                            <linearGradient id="scoreGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" style="stop-color:#4facfe;stop-opacity:1" />
+                                <stop offset="100%" style="stop-color:#00f2fe;stop-opacity:1" />
+                            </linearGradient>
+                        </defs>
+                        <circle class="score-bg" cx="60" cy="60" r="50"></circle>
+                        <circle class="score-progress" cx="60" cy="60" r="50" id="score-circle"></circle>
+                    </svg>
+                    <div class="score-text">
+                        <span id="score-percentage">0</span>%
+                    </div>
+                </div>
+            </div>
+            
+            <div class="results-stats">
+                <div class="stat-item">
+                    <span class="stat-label">Score</span>
+                    <span class="stat-value" id="stat-score">0/0</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Time Taken</span>
+                    <span class="stat-value" id="stat-time">0:00</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Correct Answers</span>
+                    <span class="stat-value" id="stat-correct">0</span>
+                </div>
+            </div>
+
+            <div class="results-details" id="results-details"></div>
+
+            <div class="modal-actions">
+                <button class="btn btn-primary" onclick="window.location.href='/'">
+                    Take Another Quiz
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const quizData = {{ quiz_data|tojson }};
+        let currentQuestion = 0;
+        let answers = {};
+        let startTime = Date.now();
+        let timeRemaining = quizData.duration_minutes * 60;
+        let timerInterval;
+
+        function initQuiz() {
+            renderQuestion();
+            updateProgress();
+            startTimer();
+            createQuestionNav();
+        }
+
+        function renderQuestion() {
+            const question = quizData.questions[currentQuestion];
+            document.getElementById('question-text').textContent = question.question;
+            document.getElementById('current-q').textContent = currentQuestion + 1;
+            
+            const optionsContainer = document.getElementById('options-container');
+            optionsContainer.innerHTML = '';
+            
+            question.options.forEach((option, index) => {
+                const optionDiv = document.createElement('div');
+                optionDiv.className = 'option';
+                if (answers[currentQuestion] === index) {
+                    optionDiv.classList.add('selected');
+                }
+                optionDiv.innerHTML = `
+                    <div class="option-radio">
+                        <div class="radio-circle"></div>
+                    </div>
+                    <span class="option-text">${option}</span>
+                `;
+                optionDiv.onclick = () => selectOption(index);
+                optionsContainer.appendChild(optionDiv);
+            });
+
+            document.getElementById('prev-btn').disabled = currentQuestion === 0;
+            document.getElementById('next-btn').style.display = currentQuestion === quizData.questions.length - 1 ? 'none' : 'inline-flex';
+            document.getElementById('submit-btn').style.display = currentQuestion === quizData.questions.length - 1 ? 'block' : 'none';
+            
+            updateQuestionNav();
+        }
+
+        function selectOption(index) {
+            answers[currentQuestion] = index;
+            renderQuestion();
+        }
+
+        function nextQuestion() {
+            if (currentQuestion < quizData.questions.length - 1) {
+                currentQuestion++;
+                renderQuestion();
+            }
+        }
+
+        function previousQuestion() {
+            if (currentQuestion > 0) {
+                currentQuestion--;
+                renderQuestion();
+            }
+        }
+
+        function goToQuestion(index) {
+            currentQuestion = index;
+            renderQuestion();
+        }
+
+        function createQuestionNav() {
+            const navContainer = document.querySelector('.question-nav');
+            navContainer.innerHTML = '';
+            quizData.questions.forEach((_, index) => {
+                const dot = document.createElement('button');
+                dot.className = 'nav-dot';
+                dot.id = `nav-dot-${index + 1}`;
+                dot.onclick = () => goToQuestion(index);
+                navContainer.appendChild(dot);
+            });
+        }
+
+        function updateQuestionNav() {
+            quizData.questions.forEach((_, index) => {
+                const dot = document.getElementById(`nav-dot-${index + 1}`);
+                if (dot) {
+                    if (index === currentQuestion) {
+                        dot.classList.add('active');
+                    } else {
+                        dot.classList.remove('active');
+                    }
+                    if (answers[index] !== undefined) {
+                        dot.classList.add('answered');
+                    } else {
+                        dot.classList.remove('answered');
+                    }
+                }
+            });
+        }
+
+        function updateProgress() {
+            const progress = ((currentQuestion + 1) / quizData.questions.length) * 100;
+            document.getElementById('progress-fill').style.width = progress + '%';
+        }
+
+        function startTimer() {
+            updateTimerDisplay();
+            timerInterval = setInterval(() => {
+                timeRemaining--;
+                updateTimerDisplay();
+                
+                if (timeRemaining <= 0) {
+                    clearInterval(timerInterval);
+                    submitQuiz();
+                }
+            }, 1000);
+        }
+
+        function updateTimerDisplay() {
+            const minutes = Math.floor(timeRemaining / 60);
+            const seconds = timeRemaining % 60;
+            document.getElementById('timer-minutes').textContent = String(minutes).padStart(2, '0');
+            document.getElementById('timer-seconds').textContent = String(seconds).padStart(2, '0');
+            
+            const totalTime = quizData.duration_minutes * 60;
+            const elapsed = totalTime - timeRemaining;
+            const progress = (elapsed / totalTime) * 100;
+            const circumference = 2 * Math.PI * 45;
+            const offset = circumference - (progress / 100) * circumference;
+            
+            document.getElementById('timer-circle').style.strokeDashoffset = offset;
+        }
+
+        async function submitQuiz() {
+            clearInterval(timerInterval);
+            const timeTaken = Math.floor((Date.now() - startTime) / 1000);
+            
+            const answerData = {};
+            quizData.questions.forEach((q, index) => {
+                answerData[q.id] = answers[index] !== undefined ? answers[index] : null;
+            });
+
+            try {
+                const response = await fetch('/api/submit-quiz', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        answers: answerData,
+                        time_taken: timeTaken
+                    })
+                });
+
+                const results = await response.json();
+                showResults(results);
+            } catch (error) {
+                console.error('Error submitting quiz:', error);
+            }
+        }
+
+        function showResults(results) {
+            document.getElementById('stat-score').textContent = `${results.score}/${results.total}`;
+            document.getElementById('stat-correct').textContent = results.score;
+            
+            const minutes = Math.floor(results.time_taken / 60);
+            const seconds = results.time_taken % 60;
+            document.getElementById('stat-time').textContent = `${minutes}:${String(seconds).padStart(2, '0')}`;
+            
+            document.getElementById('score-percentage').textContent = results.percentage;
+            
+            const circumference = 2 * Math.PI * 50;
+            const offset = circumference - (results.percentage / 100) * circumference;
+            document.getElementById('score-circle').style.strokeDashoffset = offset;
+            
+            const detailsContainer = document.getElementById('results-details');
+            detailsContainer.innerHTML = '<h3>Question Review</h3>';
+            
+            results.results.forEach((result, index) => {
+                const detailDiv = document.createElement('div');
+                detailDiv.className = `result-item ${result.is_correct ? 'correct' : 'incorrect'}`;
+                detailDiv.innerHTML = `
+                    <div class="result-header">
+                        <span class="result-number">Q${index + 1}</span>
+                        <span class="result-status">${result.is_correct ? '✓ Correct' : '✗ Incorrect'}</span>
+                    </div>
+                    <p class="result-question">${result.question}</p>
+                    <div class="result-answers">
+                        <div class="answer-item ${result.user_answer === result.correct_answer ? 'correct-answer' : ''}">
+                            <strong>Your Answer:</strong> ${result.user_answer !== null ? result.options[result.user_answer] : 'Not answered'}
+                        </div>
+                        ${!result.is_correct ? `
+                        <div class="answer-item correct-answer">
+                            <strong>Correct Answer:</strong> ${result.options[result.correct_answer]}
+                        </div>
+                        ` : ''}
+                    </div>
+                `;
+                detailsContainer.appendChild(detailDiv);
+            });
+            
+            document.getElementById('results-modal').style.display = 'flex';
+        }
+
+        initQuiz();
+    </script>
+</body>
+</html>
