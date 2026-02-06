@@ -1,0 +1,104 @@
+{% extends "base.html" %}
+
+{% if vehicle %}
+    {% set mode = "Edit" %}
+{% else %}
+    {% set mode = "Add" %}
+{% endif %}
+
+{% block title %}{{ mode }} Vehicle{% endblock %}
+{% block page_title %}{{ mode }} Vehicle{% endblock %}
+{% block page_subtitle %}Capture key details to keep your fleet organized and visible.{% endblock %}
+
+{% block content %}
+<div class="card card-form">
+    <form method="post" class="form-grid">
+        <div class="form-group">
+            <label for="plate_number" class="field-label">Plate Number<span class="required">*</span></label>
+            <input id="plate_number"
+                   name="plate_number"
+                   type="text"
+                   required
+                   value="{{ vehicle.plate_number if vehicle else '' }}"
+                   class="text-input" />
+        </div>
+
+        <div class="form-group">
+            <label for="make" class="field-label">Make<span class="required">*</span></label>
+            <input id="make"
+                   name="make"
+                   type="text"
+                   required
+                   value="{{ vehicle.make if vehicle else '' }}"
+                   class="text-input" />
+        </div>
+
+        <div class="form-group">
+            <label for="model" class="field-label">Model<span class="required">*</span></label>
+            <input id="model"
+                   name="model"
+                   type="text"
+                   required
+                   value="{{ vehicle.model if vehicle else '' }}"
+                   class="text-input" />
+        </div>
+
+        <div class="form-group">
+            <label for="year" class="field-label">Year</label>
+            <input id="year"
+                   name="year"
+                   type="number"
+                   min="1900"
+                   max="2100"
+                   value="{{ vehicle.year if vehicle and vehicle.year else '' }}"
+                   class="text-input" />
+        </div>
+
+        <div class="form-group">
+            <label for="driver_name" class="field-label">Driver</label>
+            <input id="driver_name"
+                   name="driver_name"
+                   type="text"
+                   value="{{ vehicle.driver_name if vehicle else '' }}"
+                   class="text-input" />
+        </div>
+
+        <div class="form-group">
+            <label for="status" class="field-label">Status</label>
+            <select id="status" name="status" class="select-input">
+                {% set current_status = (vehicle.status if vehicle else 'Active') %}
+                <option value="Active" {% if current_status == 'Active' %}selected{% endif %}>Active</option>
+                <option value="In Maintenance" {% if current_status == 'In Maintenance' %}selected{% endif %}>In Maintenance</option>
+                <option value="Retired" {% if current_status == 'Retired' %}selected{% endif %}>Retired</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="mileage" class="field-label">Mileage (km)</label>
+            <input id="mileage"
+                   name="mileage"
+                   type="number"
+                   min="0"
+                   value="{{ vehicle.mileage if vehicle and vehicle.mileage is not none else '' }}"
+                   class="text-input" />
+        </div>
+
+        <div class="form-group form-group-full">
+            <label for="notes" class="field-label">Notes</label>
+            <textarea id="notes"
+                      name="notes"
+                      rows="4"
+                      class="textarea-input"
+                      placeholder="Maintenance history, typical routes, fuel card info, etc.">{{ vehicle.notes if vehicle else '' }}</textarea>
+        </div>
+
+        <div class="form-actions">
+            <a href="{{ url_for('index') }}" class="btn btn-ghost">Cancel</a>
+            <button type="submit" class="btn btn-primary">
+                {% if vehicle %}Save Changes{% else %}Create Vehicle{% endif %}
+            </button>
+        </div>
+    </form>
+</div>
+{% endblock %}
+

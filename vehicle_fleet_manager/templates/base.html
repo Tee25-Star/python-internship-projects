@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fleet Manager | {% block title %}{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="app-shell">
+        <aside class="sidebar">
+            <div class="logo">
+                <div class="logo-mark">FM</div>
+                <div class="logo-text">
+                    <span class="logo-title">Fleet Manager</span>
+                    <span class="logo-subtitle">Vehicle Control Center</span>
+                </div>
+            </div>
+            <nav class="nav">
+                <a href="{{ url_for('index') }}" class="nav-item {% if request.endpoint == 'index' %}active{% endif %}">
+                    <span class="nav-icon">📊</span>
+                    <span>Dashboard</span>
+                </a>
+                <a href="{{ url_for('create_vehicle') }}" class="nav-item {% if request.endpoint == 'create_vehicle' %}active{% endif %}">
+                    <span class="nav-icon">➕</span>
+                    <span>Add Vehicle</span>
+                </a>
+            </nav>
+            <div class="sidebar-footer">
+                <span class="badge badge-pill">Python · Flask</span>
+            </div>
+        </aside>
+
+        <main class="main">
+            <header class="topbar">
+                <div class="topbar-left">
+                    <h1 class="page-title">{% block page_title %}{% endblock %}</h1>
+                    <p class="page-subtitle">
+                        {% block page_subtitle %}{% endblock %}
+                    </p>
+                </div>
+                <div class="topbar-right">
+                    <a href="{{ url_for('create_vehicle') }}" class="btn btn-primary">
+                        <span>+ Add Vehicle</span>
+                    </a>
+                </div>
+            </header>
+
+            <section class="content">
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                    {% if messages %}
+                        <div class="flash-container">
+                            {% for category, message in messages %}
+                                <div class="flash flash-{{ category }}">
+                                    {{ message }}
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                {% endwith %}
+
+                {% block content %}{% endblock %}
+            </section>
+        </main>
+    </div>
+</body>
+</html>
+
