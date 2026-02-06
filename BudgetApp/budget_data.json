@@ -1,0 +1,57 @@
+{
+  "transactions": [
+    {
+      "id": "1",
+      "type": "expense",
+      "amount": 5.0,
+      "category": "shopping",
+      "note": "food",
+      "date": "2026-01-24"
+    }
+  ],
+  "categories": [
+    {
+      "id": "food",
+      "name": "Food & Dining",
+      "icon": "restaurant",
+      "color": "0xffe07c5e"
+    },
+    {
+      "id": "transport",
+      "name": "Transport",
+      "icon": "directions_car",
+      "color": "0xff4ecdc4"
+    },
+    {
+      "id": "shopping",
+      "name": "Shopping",
+      "icon": "shopping_bag",
+      "color": "0xff95e1d3"
+    },
+    {
+      "id": "entertainment",
+      "name": "Entertainment",
+      "icon": "movie",
+      "color": "0xfff38181"
+    },
+    {
+      "id": "bills",
+      "name": "Bills & Utilities",
+      "icon": "receipt_long",
+      "color": "0xffaa96da"
+    },
+    {
+      "id": "health",
+      "name": "Health",
+      "icon": "favorite",
+      "color": "0xfffcbad3"
+    },
+    {
+      "id": "income",
+      "name": "Salary & Income",
+      "icon": "account_balance_wallet",
+      "color": "0xffa8e6cf"
+    }
+  ],
+  "budget_goals": {}
+}
