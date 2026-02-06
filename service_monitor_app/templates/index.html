@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PulseWatch | Service Availability Monitor</title>
+
+    <!-- Font & Icons -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/styles.css') }}"
+    />
+  </head>
+  <body>
+    <div class="bg-orbit"></div>
+    <div class="bg-orbit bg-orbit--2"></div>
+
+    <main class="shell">
+      <header class="hero">
+        <div>
+          <div class="logo-row">
+            <div class="logo-badge">
+              <span class="logo-dot"></span>
+            </div>
+            <span class="logo-text">PulseWatch</span>
+          </div>
+          <h1>Keep your services always in sight.</h1>
+          <p class="hero-subtitle">
+            Enter one or more URLs and instantly see whether they are
+            <span class="pill pill--up">up</span> or
+            <span class="pill pill--down">down</span> with real response times.
+          </p>
+          <div class="hero-meta">
+            <span>Live checks</span>
+            <span>Human?friendly UI</span>
+            <span>No sign?up required</span>
+          </div>
+        </div>
+        <div class="hero-badge">
+          <span class="hero-badge-label">Status Snapshot</span>
+          <div class="hero-badge-metrics">
+            <div class="metric">
+              <span class="metric-label">Uptime</span>
+              <span class="metric-value">99.9%</span>
+            </div>
+            <div class="metric">
+              <span class="metric-label">Median Latency</span>
+              <span class="metric-value">87 ms</span>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <section class="card">
+        <div class="card-header">
+          <div>
+            <h2>Check website availability</h2>
+            <p>Paste each URL on a new line, then hit scan.</p>
+          </div>
+          <button id="preset-examples" class="ghost-btn">
+            Try example URLs
+          </button>
+        </div>
+
+        <div class="card-body">
+          <form id="monitor-form" autocomplete="off">
+            <label for="urls" class="field-label">Websites to monitor</label>
+            <div class="field-row">
+              <textarea
+                id="urls"
+                name="urls"
+                placeholder="https://example.com
+https://status.github.com
+google.com"
+              ></textarea>
+              <div class="field-actions">
+                <button id="check-button" type="submit" class="primary-btn">
+                  <span class="btn-text">Run check</span>
+                  <span class="btn-spinner"></span>
+                </button>
+                <button
+                  id="clear-button"
+                  type="button"
+                  class="secondary-btn"
+                >
+                  Clear
+                </button>
+              </div>
+            </div>
+            <p class="helper-text">
+              No data is stored: each run is checked live from your machine.
+            </p>
+          </form>
+        </div>
+      </section>
+
+      <section class="card card--results">
+        <div class="card-header">
+          <div>
+            <h2>Current scan</h2>
+            <p>Results appear here as soon as your check completes.</p>
+          </div>
+          <span id="last-run" class="last-run">No checks yet</span>
+        </div>
+
+        <div id="results-empty" class="results-empty">
+          <p>Start by running a check above.</p>
+        </div>
+
+        <div id="results-table-wrapper" class="results-table-wrapper hidden">
+          <table class="results-table">
+            <thead>
+              <tr>
+                <th>URL</th>
+                <th>Status</th>
+                <th>HTTP</th>
+                <th>Response time</th>
+                <th>Details</th>
+              </tr>
+            </thead>
+            <tbody id="results-body"></tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+  </body>
+</html>
+

@@ -1,0 +1,250 @@
+# PulseWatch – Service / Website Availability Monitor
+
+## 1. Requirements Analysis
+
+### 1.1 Problem Statement
+Modern websites and online services must be available and responsive at all times. Developers, operators, and even non?technical users often need a quick way to verify whether one or more URLs are currently reachable and how fast they respond. Many full?featured monitoring tools are complex to set up or require accounts, which is overkill for simple, ad?hoc checks.
+
+### 1.2 Objectives
+- Provide a lightweight web application that allows users to:
+  - Enter one or more website URLs.
+  - Trigger live availability checks on demand.
+  - View HTTP status codes and basic latency metrics.
+- Deliver a visually distinctive, modern interface that clearly communicates status.
+- Keep the system simple enough to run locally with minimal configuration.
+
+### 1.3 Functional Requirements
+- The system shall allow the user to input multiple URLs.
+- The system shall accept URLs separated by new lines or commas.
+- The system shall normalize URLs (e.g., add `http://` if the user omits a scheme).
+- The system shall send HTTP GET requests to each URL with a reasonable timeout.
+- The system shall record:
+  - Availability state (up / down / invalid).
+  - HTTP status code, if any.
+  - Response time in milliseconds.
+- The system shall return results to the frontend in a structured format (JSON).
+- The system shall display results in a table with clear status indicators.
+
+### 1.4 Non?Functional Requirements
+- **Usability**: Intuitive, attractive interface accessible to non?technical users.
+- **Performance**: Each scan should complete within a few seconds for a small list of URLs, assuming external sites are responsive.
+- **Reliability**: The application should handle network timeouts and errors gracefully, without crashing.
+- **Portability**: The solution should run on any system with Python 3 and a web browser.
+- **Security**: No persistent storage of URLs or results; checks are performed on demand from the user’s environment.
+
+### 1.5 Stakeholders
+- Individual developers wanting quick health checks.
+- Small site owners who need an ad?hoc status overview.
+- Students or learners needing an example of a simple monitoring tool.
+
+## 2. System Architecture Design
+
+### 2.1 Overview
+The system follows a simple client–server web architecture:
+- **Client (Frontend)**: A single HTML page rendered by Flask, with CSS for visual styling and JavaScript for asynchronous communication.
+- **Server (Backend)**: A Flask application that exposes:
+  - A root route (`/`) to serve the main interface.
+  - An API route (`/api/check`) to handle availability checks.
+
+### 2.2 Components
+1. **Frontend UI**
+   - Implemented in `templates/index.html`.
+   - Styled with `static/css/styles.css` using a dark, glassmorphism?inspired theme, animated accents, and responsive layout.
+   - Behavior implemented in `static/js/main.js`, handling:
+     - Reading and parsing URLs from the text area.
+     - Dispatching an AJAX request to `/api/check`.
+     - Rendering the results table dynamically.
+
+2. **Flask Backend**
+   - Implemented in `app.py`.
+   - Core responsibilities:
+     - Validate and normalize user input.
+     - Call the HTTP checking function for each URL.
+     - Aggregate and serialize results as JSON.
+
+3. **HTTP Checker**
+   - A helper function `check_website(url: str)`:
+     - Normalizes the URL (ensure a scheme is present).
+     - Measures elapsed time using a high?resolution timer.
+     - Issues an HTTP GET request with a timeout.
+     - Catches exceptions and returns structured error information.
+
+4. **Configuration and Dependencies**
+   - `requirements.txt` defines external Python packages:
+     - `Flask` for the web framework.
+     - `requests` for HTTP communication.
+
+### 2.3 Data Flow
+1. The user enters one or more URLs into the text area.
+2. When the user clicks **Run check**, the client parses the input into a list of URLs and sends a JSON payload to `/api/check`.
+3. The server:
+   - Extracts the URL list.
+   - Deduplicates and cleans entries.
+   - Calls `check_website` for each URL.
+4. The server returns a JSON response containing an array of result objects.
+5. The client receives the JSON, maps it into table rows, and updates the UI with:
+   - Status pills (Up / Down / Invalid).
+   - HTTP status codes.
+   - Response times.
+   - Error or success messages.
+
+### 2.4 Deployment Model
+- Intended to run locally in development mode:
+  - `python app.py` starts the Flask development server on `http://127.0.0.1:5000`.
+- Could be deployed to a production web server (e.g., Gunicorn + Nginx or a platform?as?a?service) with minor configuration changes.
+
+## 3. MVP (Minimum Viable Product) Implementation
+
+### 3.1 MVP Scope
+The MVP focuses on delivering the minimum set of functionality that still provides real value:
+- Single?page UI for entering and viewing status for multiple URLs.
+- Backend support for on?demand checks via a single API endpoint.
+- Clear, human?readable output (Up/Down, HTTP status, response time).
+- A visually distinct, modern interface to make the app pleasant to use.
+
+### 3.2 Implemented Features
+1. **URL Input**
+   - Text area for multiple URLs.
+   - Support for new?line and comma?separated entry.
+   - Helper button to auto?fill example URLs.
+
+2. **Availability Checks**
+   - Normalization of URLs (adding default scheme).
+   - HTTP GET with timeout using the `requests` library.
+   - Mapping of outcomes to:
+     - `status`: `up`, `down`, or `invalid`.
+     - `http_status`: numeric HTTP response code or `null`.
+     - `response_time_ms`: numeric value in milliseconds where applicable.
+     - `error`: error message for network failures or invalid input.
+
+3. **Result Presentation**
+   - Table view with columns for URL, status, HTTP code, response time, and details.
+   - Color?coded status pills and glowing dots for at?a?glance recognition.
+   - Responsive design that hides less critical columns on very small screens.
+
+4. **User Experience Enhancements**
+   - Loading spinner on the **Run check** button to indicate active processing.
+   - “Last run at …” label displaying the time of the most recent scan.
+   - Clear message when there are no results yet.
+
+### 3.3 Excluded from MVP (Future Enhancements)
+- Persistent storage of monitored URLs or historical data.
+- Scheduled or background monitoring and alerting.
+- User accounts or multi?tenant capabilities.
+- Detailed performance charts and long?term analytics.
+
+## 4. Testing
+
+### 4.1 Testing Strategy
+Given the small scope, the primary focus is on:
+- **Manual functional testing** of core flows.
+- **Error handling verification** for edge cases (invalid URLs, network issues).
+
+Automated tests can be added later for:
+- Unit testing of the `check_website` function.
+- Integration testing of the `/api/check` endpoint.
+
+### 4.2 Test Cases (Manual)
+
+1. **Single Valid URL**
+   - Input: `https://example.com`
+   - Expected:
+     - Status: `Up` (assuming the site is reachable).
+     - HTTP code: `200`.
+     - Response time: Non?null positive value.
+
+2. **Multiple Valid URLs**
+   - Input: several popular sites (e.g., `https://www.google.com`, `https://www.github.com`).
+   - Expected:
+     - Each row displays appropriate status and HTTP codes.
+     - No duplication when the same URL is entered twice.
+
+3. **Missing Scheme**
+   - Input: `google.com`
+   - Expected:
+     - Backend automatically prepends `http://`.
+     - Site is checked and results returned as normal.
+
+4. **Invalid Domain**
+   - Input: a clearly invalid domain name.
+   - Expected:
+     - Status: `Down` or `Invalid` depending on the failure.
+     - HTTP code: `—` / null.
+     - Details: descriptive error message.
+
+5. **Empty Input**
+   - Input: empty text area, click **Run check**.
+   - Expected:
+     - No request sent if there are zero parsed URLs.
+     - The cursor moves to the text area to prompt user input.
+
+6. **API Error Handling**
+   - Simulate API failure (e.g., by stopping the Flask server or using browser dev tools).
+   - Expected:
+     - UI displays an error row indicating that the check could not be performed.
+     - The application does not hang or crash.
+
+### 4.3 Cross?Browser and Responsiveness
+- Verify UI rendering on at least:
+  - Chromium?based browser (e.g., Chrome, Edge).
+  - Firefox.
+- Test layout on:
+  - Desktop or laptop screen.
+  - Narrow browser window (mobile simulation).
+
+## 5. Documentation
+
+### 5.1 Project Structure
+- `app.py` – Main Flask application and HTTP check logic.
+- `templates/index.html` – Frontend HTML template.
+- `static/css/styles.css` – Styling, layout, and visual theme.
+- `static/js/main.js` – Client?side behavior and AJAX communication.
+- `requirements.txt` – Python dependencies (Flask, requests).
+- `README.md` – Quick start guide and usage instructions.
+
+### 5.2 Installation and Usage
+- Requires Python 3.9+ and `pip`.
+- Installation and run steps:
+  - Create optional virtual environment.
+  - Install dependencies from `requirements.txt`.
+  - Run `python app.py` and open `http://127.0.0.1:5000`.
+- Usage flow:
+  - Paste URLs, run check, inspect results.
+  - Use “Try example URLs” to quickly validate the setup.
+
+### 5.3 Maintenance and Extension
+- The architecture is intentionally simple and modular:
+  - Additional routes can be added to extend the API.
+  - The `check_website` function can be enhanced to support:
+    - Different HTTP methods or health?check patterns.
+    - Threshold?based alerts.
+  - Frontend can be upgraded to a component framework if needed (e.g., React, Vue) without changing the basic API contract.
+
+## 6. Final Presentation
+
+### 6.1 Key Messages
+- **Problem**: Quickly assessing whether multiple websites are available and responsive is a common need, but existing tools can be heavy?weight or overcomplicated.
+- **Solution**: PulseWatch – a minimal, Python?based web application that runs locally, checks site availability on demand, and presents results in an engaging UI.
+
+### 6.2 Demo Flow
+1. **Introduce the UI**
+   - Show the hero section with branding and status snapshot.
+   - Highlight the URL input area and controls.
+2. **Run Example Scan**
+   - Use the “Try example URLs” button.
+   - Click **Run check** and walk through the resulting table:
+     - Up/Down status.
+     - HTTP codes.
+     - Response times.
+3. **Show Edge Cases**
+   - Add an obviously invalid URL.
+   - Demonstrate how the system reports errors without failing.
+
+### 6.3 Future Work
+- Add scheduled checks and historical trend charts.
+- Introduce notifications (email, messaging apps) when a site becomes unavailable.
+- Build user profiles with saved URL groups for different environments (production, staging, etc.).
+
+### 6.4 Conclusion
+The PulseWatch MVP meets the core objective: providing a visually appealing, easy?to?use tool for quick, ad?hoc service availability checks. Its simple architecture and clean separation between frontend and backend make it an excellent foundation for future enhancements such as persistence, alerting, and advanced analytics.
+
