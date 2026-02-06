@@ -1,0 +1,161 @@
+{% extends "layout.html" %}
+
+{% block title %}Aurora Store � Checkout{% endblock %}
+
+{% block content %}
+<section class="space-y-6">
+    <div class="flex items-center justify-between gap-3">
+        <div>
+            <h1 class="text-xl font-semibold tracking-tight text-slate-50 sm:text-2xl">
+                Checkout
+            </h1>
+            <p class="text-sm text-slate-300">
+                Enter your details and confirm your demo order.
+            </p>
+        </div>
+        <a href="{{ url_for('view_cart') }}" class="text-xs font-medium text-slate-300 underline-offset-2 hover:text-aurora-100 hover:underline">
+            ? Back to cart
+        </a>
+    </div>
+
+    {% if order_summary %}
+        <!-- Confirmation state -->
+        <div class="grid gap-6 lg:grid-cols-[minmax(0,1.4fr)_minmax(0,1.1fr)]">
+            <div class="space-y-4 rounded-3xl border border-emerald-500/40 bg-emerald-500/10 p-5 text-emerald-50 shadow-xl shadow-emerald-500/30">
+                <div class="inline-flex items-center gap-2 rounded-full bg-emerald-500/20 px-3 py-1 text-[0.7rem] font-semibold uppercase tracking-[0.18em]">
+                    <span class="h-2 w-2 rounded-full bg-emerald-300"></span>
+                    Order confirmed (Demo)
+                </div>
+                <h2 class="text-xl font-semibold text-emerald-50">Thank you, {{ order_summary.name }}!</h2>
+                <p class="text-sm text-emerald-100">
+                    Your demo order has been captured. In a real application, this is where
+                    you might send emails, process payments, and create records in a database.
+                </p>
+                <div class="grid gap-3 text-xs sm:grid-cols-2">
+                    <div class="rounded-2xl border border-emerald-400/40 bg-emerald-500/15 p-3">
+                        <p class="mb-1 text-[0.7rem] font-semibold uppercase tracking-[0.18em] text-emerald-200">
+                            Contact
+                        </p>
+                        <p>{{ order_summary.name }}</p>
+                        <p class="text-emerald-100/90">{{ order_summary.email }}</p>
+                    </div>
+                    <div class="rounded-2xl border border-emerald-400/40 bg-emerald-500/15 p-3">
+                        <p class="mb-1 text-[0.7rem] font-semibold uppercase tracking-[0.18em] text-emerald-200">
+                            Shipping
+                        </p>
+                        <p class="whitespace-pre-wrap">{{ order_summary.address }}</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="space-y-4 rounded-3xl border border-white/10 bg-slate-950/70 p-4 shadow-lg shadow-black/40">
+                <h2 class="text-sm font-semibold text-slate-50">Order summary</h2>
+                <div class="divide-y divide-white/5 text-sm text-slate-300">
+                    {% for item in order_summary.items %}
+                        <div class="flex items-center justify-between gap-3 py-2">
+                            <div>
+                                <p class="text-xs font-medium text-slate-100">
+                                    {{ item.name }}
+                                    <span class="text-slate-400">� {{ item.quantity }}</span>
+                                </p>
+                                <p class="text-[0.7rem] text-slate-400">{{ item.category }}</p>
+                            </div>
+                            <p class="text-xs font-semibold text-slate-50">
+                                ${{ '%.2f'|format(item.line_total) }}
+                            </p>
+                        </div>
+                    {% endfor %}
+                </div>
+                <div class="space-y-1 text-sm text-slate-300">
+                    <div class="flex justify-between">
+                        <span>Subtotal</span>
+                        <span>${{ '%.2f'|format(order_summary.subtotal) }}</span>
+                    </div>
+                    <div class="flex justify-between text-slate-400">
+                        <span>Shipping</span>
+                        <span>${{ '%.2f'|format(order_summary.shipping) }}</span>
+                    </div>
+                    <div class="flex justify-between border-t border-white/10 pt-2 text-sm font-semibold text-slate-50">
+                        <span>Total</span>
+                        <span>${{ '%.2f'|format(order_summary.total) }}</span>
+                    </div>
+                </div>
+                <a href="{{ url_for('index') }}" class="block rounded-xl bg-aurora-500 px-4 py-2 text-center text-sm font-semibold text-slate-50 shadow-lg shadow-aurora-500/40 transition hover:-translate-y-0.5 hover:bg-aurora-600">
+                    Back to home
+                </a>
+            </div>
+        </div>
+    {% else %}
+        <!-- Form state -->
+        <div class="grid gap-6 lg:grid-cols-[minmax(0,1.4fr)_minmax(0,1.1fr)]">
+            <form method="post" class="space-y-4 rounded-3xl border border-white/10 bg-slate-950/70 p-5 shadow-lg shadow-black/40">
+                <div class="grid gap-4 sm:grid-cols-2">
+                    <div>
+                        <label for="name" class="block text-xs font-medium text-slate-300">
+                            Full name
+                        </label>
+                        <input id="name" name="name" type="text" value="{{ name or '' }}" required class="mt-1 w-full rounded-xl border border-white/10 bg-slate-900/80 px-3 py-2 text-sm text-slate-50 outline-none ring-aurora-500/40 focus:ring">
+                    </div>
+                    <div>
+                        <label for="email" class="block text-xs font-medium text-slate-300">
+                            Email address
+                        </label>
+                        <input id="email" name="email" type="email" value="{{ email or '' }}" required class="mt-1 w-full rounded-xl border border-white/10 bg-slate-900/80 px-3 py-2 text-sm text-slate-50 outline-none ring-aurora-500/40 focus:ring">
+                    </div>
+                </div>
+                <div>
+                    <label for="address" class="block text-xs font-medium text-slate-300">
+                        Shipping address
+                    </label>
+                    <textarea id="address" name="address" rows="3" required class="mt-1 w-full rounded-xl border border-white/10 bg-slate-900/80 px-3 py-2 text-sm text-slate-50 outline-none ring-aurora-500/40 focus:ring">{{ address or '' }}</textarea>
+                </div>
+                <div class="rounded-2xl border border-amber-500/30 bg-amber-500/10 p-3 text-xs text-amber-100">
+                    <p class="font-semibold">Demo checkout only</p>
+                    <p>No real payments or personal data are processed. This is a safe prototype for learning and showcasing UI.</p>
+                </div>
+                <button type="submit" class="inline-flex w-full items-center justify-center rounded-xl bg-aurora-500 px-4 py-2.5 text-sm font-semibold text-slate-50 shadow-lg shadow-aurora-500/40 transition hover:-translate-y-0.5 hover:bg-aurora-600">
+                    Place demo order
+                </button>
+            </form>
+
+            <div class="space-y-4 rounded-3xl border border-white/10 bg-slate-900/70 p-4 shadow-lg shadow-black/40">
+                <h2 class="text-sm font-semibold text-slate-50">Order summary</h2>
+                <div class="max-h-60 space-y-2 overflow-y-auto pr-1 text-sm text-slate-300">
+                    {% for item in items %}
+                        <div class="flex items-center justify-between gap-3 rounded-2xl border border-white/5 bg-slate-950/70 px-3 py-2">
+                            <div class="flex-1">
+                                <p class="text-xs font-medium text-slate-100">
+                                    {{ item.name }}
+                                    <span class="text-slate-400">� {{ item.quantity }}</span>
+                                </p>
+                                <p class="text-[0.65rem] text-slate-400">{{ item.category }}</p>
+                            </div>
+                            <p class="text-xs font-semibold text-slate-50">
+                                ${{ '%.2f'|format(item.line_total) }}
+                            </p>
+                        </div>
+                    {% endfor %}
+                </div>
+                <div class="space-y-1 text-sm text-slate-300">
+                    <div class="flex justify-between">
+                        <span>Subtotal</span>
+                        <span>${{ '%.2f'|format(subtotal) }}</span>
+                    </div>
+                    <div class="flex justify-between text-slate-400">
+                        <span>Shipping</span>
+                        <span>${{ '%.2f'|format(shipping) }}</span>
+                    </div>
+                    <div class="flex justify-between border-t border-white/10 pt-2 text-sm font-semibold text-slate-50">
+                        <span>Total</span>
+                        <span>${{ '%.2f'|format(total) }}</span>
+                    </div>
+                </div>
+                <p class="text-[0.7rem] text-slate-400">
+                    You can tweak this layout and flow to match your own branding or extend it with real payment integrations.
+                </p>
+            </div>
+        </div>
+    {% endif %}
+</section>
+{% endblock %}
+

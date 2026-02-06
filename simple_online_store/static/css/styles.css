@@ -1,0 +1,93 @@
+/* Global tweaks on top of Tailwind for extra polish */
+
+body {
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text",
+    "Segoe UI", sans-serif;
+}
+
+.nav-link {
+  position: relative;
+  padding-bottom: 0.1rem;
+}
+
+.nav-link::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 0;
+  height: 1px;
+  background: linear-gradient(
+    to right,
+    rgb(129 140 248),
+    rgb(244 114 182),
+    rgb(56 189 248)
+  );
+  transition: width 160ms ease-out;
+}
+
+.nav-link:hover::after {
+  width: 100%;
+}
+
+.category-chip {
+  border-radius: 9999px;
+  padding: 0.35rem 0.8rem;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  border: 1px solid rgba(148, 163, 184, 0.35);
+  background: rgba(15, 23, 42, 0.82);
+  color: rgb(226, 232, 240);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.category-chip-active {
+  border-color: rgba(129, 140, 248, 0.7);
+  background: radial-gradient(
+    circle at top,
+    rgba(129, 140, 248, 0.32),
+    rgba(15, 23, 42, 0.9)
+  );
+  color: white;
+  box-shadow: 0 0 24px rgba(129, 140, 248, 0.45);
+}
+
+.highlight-pill {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  padding: 0.55rem 0.7rem;
+  border-radius: 9999px;
+  border: 1px solid rgba(148, 163, 184, 0.4);
+  background: radial-gradient(
+    circle at top left,
+    rgba(148, 163, 184, 0.27),
+    rgba(15, 23, 42, 0.9)
+  );
+}
+
+.highlight-dot {
+  width: 0.55rem;
+  height: 0.55rem;
+  border-radius: 9999px;
+  box-shadow: 0 0 12px rgba(148, 163, 184, 0.9);
+}
+
+.flash-message {
+  animation: flash-in 260ms ease-out;
+}
+
+@keyframes flash-in {
+  from {
+    opacity: 0;
+    transform: translateY(-4px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+

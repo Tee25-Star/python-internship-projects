@@ -1,0 +1,132 @@
+{% extends "layout.html" %}
+
+{% block title %}Aurora Store � Home{% endblock %}
+
+{% block content %}
+<section class="grid gap-8 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,1.4fr)]">
+    <!-- Hero / intro -->
+    <div class="space-y-6">
+        <div class="inline-flex items-center gap-2 rounded-full border border-aurora-500/40 bg-slate-900/60 px-3 py-1 text-[0.7rem] font-semibold uppercase tracking-[0.18em] text-aurora-100 shadow shadow-aurora-500/40">
+            <span class="h-1.5 w-1.5 rounded-full bg-emerald-400"></span>
+            Live Prototype
+            <span class="hidden text-slate-400 sm:inline">Beautiful, minimal, and modern.</span>
+        </div>
+
+        <div class="space-y-4">
+            <h1 class="text-balance text-3xl font-semibold tracking-tight text-slate-50 sm:text-4xl lg:text-5xl">
+                Elevate your desk with
+                <span class="bg-gradient-to-r from-aurora-200 via-fuchsia-300 to-cyan-200 bg-clip-text text-transparent">
+                    aurora?lit tech
+                </span>
+            </h1>
+            <p class="max-w-xl text-sm leading-relaxed text-slate-300 sm:text-base">
+                Browse a curated collection of headphones, keyboards, smart lamps, and more.
+                This is a fully interactive front-end prototype powered by Flask � perfect for demos or learning.
+            </p>
+        </div>
+
+        <div class="flex flex-wrap items-center gap-3">
+            <a href="#products" class="inline-flex items-center justify-center rounded-xl bg-aurora-500 px-4 py-2 text-sm font-semibold text-slate-50 shadow-lg shadow-aurora-500/40 transition hover:-translate-y-0.5 hover:bg-aurora-600">
+                Shop the collection
+            </a>
+            <a href="{{ url_for('view_cart') }}" class="inline-flex items-center justify-center rounded-xl border border-white/10 bg-slate-900/60 px-3 py-2 text-xs font-medium text-slate-100 shadow-sm transition hover:border-aurora-500/60 hover:text-aurora-50">
+                View cart ({{ cart_item_count }})
+            </a>
+        </div>
+
+        <!-- Category chips -->
+        <div class="space-y-2">
+            <p class="text-xs font-medium uppercase tracking-[0.18em] text-slate-400">Browse by category</p>
+            <div class="flex flex-wrap gap-2">
+                <a href="{{ url_for('index') }}" class="category-chip {% if selected_category == 'All' %}category-chip-active{% endif %}">
+                    All
+                </a>
+                {% for cat in categories %}
+                    <a href="{{ url_for('index') }}?category={{ cat }}" class="category-chip {% if selected_category == cat %}category-chip-active{% endif %}">
+                        {{ cat }}
+                    </a>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Small highlight box -->
+        <div class="grid gap-3 text-xs text-slate-300 sm:grid-cols-3">
+            <div class="highlight-pill">
+                <span class="highlight-dot bg-emerald-400"></span>
+                <div>
+                    <p class="font-semibold text-slate-50">Session cart</p>
+                    <p>Items stay while you browse.</p>
+                </div>
+            </div>
+            <div class="highlight-pill">
+                <span class="highlight-dot bg-sky-400"></span>
+                <div>
+                    <p class="font-semibold text-slate-50">No payments</p>
+                    <p>Safe, demo-only checkout.</p>
+                </div>
+            </div>
+            <div class="highlight-pill">
+                <span class="highlight-dot bg-fuchsia-400"></span>
+                <div>
+                    <p class="font-semibold text-slate-50">Modern UI</p>
+                    <p>Built with Tailwind &amp; glassmorphism.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Product grid -->
+    <div id="products" class="rounded-3xl border border-white/10 bg-slate-900/60 p-4 shadow-2xl shadow-black/30 sm:p-5">
+        <div class="mb-3 flex items-center justify-between text-xs text-slate-400">
+            <p class="font-medium uppercase tracking-[0.18em]">Catalog</p>
+            <p>{{ products|length }} products</p>
+        </div>
+
+        <div class="grid gap-4 sm:grid-cols-2">
+            {% for product in products %}
+                <article class="group flex flex-col overflow-hidden rounded-2xl border border-white/5 bg-slate-900/80 shadow-md shadow-black/40 transition hover:-translate-y-1 hover:border-aurora-500/50 hover:shadow-aurora-500/40">
+                    <a href="{{ url_for('product_detail', product_id=product.id) }}" class="relative block">
+                        <img src="{{ product.image_url }}" alt="{{ product.name }}" class="h-40 w-full object-cover transition duration-500 group-hover:scale-[1.03]">
+                        {% if product.badge %}
+                            <div class="absolute left-3 top-3 rounded-full bg-black/40 px-2 py-1 text-[0.6rem] font-semibold uppercase tracking-[0.18em] text-aurora-100 backdrop-blur">
+                                {{ product.badge }}
+                            </div>
+                        {% endif %}
+                        <div class="pointer-events-none absolute inset-0 bg-gradient-to-t from-slate-950/40 via-transparent to-transparent opacity-0 transition group-hover:opacity-100"></div>
+                    </a>
+                    <div class="flex flex-1 flex-col px-3 pb-3 pt-2">
+                        <div class="mb-1 flex items-center justify-between">
+                            <h2 class="line-clamp-1 text-sm font-semibold text-slate-50">{{ product.name }}</h2>
+                            <span class="rounded-full bg-slate-800/80 px-2 py-0.5 text-[0.6rem] font-medium uppercase tracking-[0.18em] text-slate-300">
+                                {{ product.category }}
+                            </span>
+                        </div>
+                        <p class="mb-2 line-clamp-2 text-xs text-slate-400">
+                            {{ product.description }}
+                        </p>
+                        <div class="mt-auto flex items-end justify-between gap-2">
+                            <div>
+                                <p class="text-xs text-slate-400">From</p>
+                                <p class="text-base font-semibold text-aurora-100">
+                                    ${{ '%.2f'|format(product.price) }}
+                                </p>
+                            </div>
+                            <form method="post" action="{{ url_for('add_to_cart') }}" class="flex items-center gap-1.5">
+                                <input type="hidden" name="product_id" value="{{ product.id }}">
+                                <input type="hidden" name="redirect_to" value="{{ url_for('index') }}">
+                                <button type="submit" class="inline-flex items-center justify-center rounded-xl bg-aurora-500 px-3 py-1.5 text-xs font-semibold text-slate-50 shadow shadow-aurora-500/40 transition hover:bg-aurora-600">
+                                    Add
+                                </button>
+                                <a href="{{ url_for('product_detail', product_id=product.id) }}" class="text-[0.7rem] font-medium text-slate-300 underline-offset-2 hover:text-aurora-100 hover:underline">
+                                    Details
+                                </a>
+                            </form>
+                        </div>
+                    </div>
+                </article>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endblock %}
+

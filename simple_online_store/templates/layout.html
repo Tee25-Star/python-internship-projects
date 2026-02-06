@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Aurora Store{% endblock %}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Tailwind CSS via CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        aurora: {
+                            50: '#f5f8ff',
+                            100: '#e6efff',
+                            200: '#c4d7ff',
+                            500: '#6366f1',
+                            600: '#4f46e5',
+                            700: '#3730a3'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <script defer src="{{ url_for('static', filename='js/main.js') }}"></script>
+</head>
+<body class="min-h-screen bg-slate-950 text-slate-50">
+<div class="relative min-h-screen overflow-hidden">
+    <!-- Aurora gradient background -->
+    <div class="pointer-events-none fixed inset-0 -z-10">
+        <div class="absolute -left-32 -top-32 h-72 w-72 rounded-full bg-aurora-500/40 blur-3xl"></div>
+        <div class="absolute right-0 top-10 h-72 w-72 rounded-full bg-fuchsia-500/40 blur-3xl"></div>
+        <div class="absolute bottom-0 left-20 h-72 w-72 rounded-full bg-cyan-500/30 blur-3xl"></div>
+    </div>
+
+    <!-- Glassy container -->
+    <div class="mx-auto flex min-h-screen max-w-6xl flex-col px-4 pb-10 pt-4 sm:px-6 lg:px-8">
+        <!-- Top navigation -->
+        <header class="sticky top-0 z-20 mb-6 rounded-2xl border border-white/5 bg-slate-900/60 px-3 py-3 backdrop-blur-xl sm:px-6">
+            <div class="flex items-center justify-between gap-4">
+                <a href="{{ url_for('index') }}" class="flex items-center gap-3">
+                    <div class="flex h-9 w-9 items-center justify-center rounded-2xl bg-gradient-to-tr from-aurora-500 via-fuchsia-500 to-cyan-400 shadow-lg shadow-aurora-500/40">
+                        <span class="text-lg font-black tracking-tight">A</span>
+                    </div>
+                    <div class="hidden flex-col sm:flex">
+                        <span class="text-xs font-semibold uppercase tracking-[0.18em] text-aurora-200">Aurora</span>
+                        <span class="text-sm font-medium text-slate-100">Modern Tech Store</span>
+                    </div>
+                </a>
+
+                <nav class="flex items-center gap-4 text-xs font-medium text-slate-200 sm:text-sm">
+                    <a href="{{ url_for('index') }}" class="nav-link">Home</a>
+                    <a href="{{ url_for('view_cart') }}" class="relative nav-link flex items-center gap-1.5">
+                        <span>Cart</span>
+                        {% if cart_item_count %}
+                            <span class="inline-flex items-center justify-center rounded-full bg-aurora-500 px-2 py-0.5 text-[0.65rem] font-semibold leading-none text-slate-50 shadow-sm shadow-aurora-500/50">
+                                {{ cart_item_count }}
+                            </span>
+                        {% endif %}
+                    </a>
+                    <span class="hidden text-slate-500 sm:inline">|</span>
+                    <span class="hidden text-[0.7rem] uppercase tracking-[0.18em] text-slate-400 sm:inline">
+                        Prototype <span class="text-emerald-400">Live</span>
+                    </span>
+                </nav>
+            </div>
+        </header>
+
+        <!-- Flash messages -->
+        <div id="flash-messages" class="space-y-2">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        {% set color = 'bg-emerald-500/15 text-emerald-100 border-emerald-500/40' %}
+                        {% if category == 'error' %}
+                            {% set color = 'bg-rose-500/15 text-rose-100 border-rose-500/40' %}
+                        {% elif category == 'info' %}
+                            {% set color = 'bg-sky-500/15 text-sky-100 border-sky-500/40' %}
+                        {% endif %}
+                        <div class="flash-message flex items-center justify-between gap-4 rounded-xl border px-4 py-3 text-sm shadow-lg shadow-black/20 {{ color }}">
+                            <p class="flex-1">{{ message }}</p>
+                            <button type="button" class="shrink-0 text-xs text-slate-300 hover:text-slate-50" data-dismiss-flash>
+                                Close
+                            </button>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+        </div>
+
+        <!-- Main content -->
+        <main class="mt-2 flex-1">
+            {% block content %}{% endblock %}
+        </main>
+
+        <!-- Footer -->
+        <footer class="mt-10 border-t border-white/5 pt-6 text-xs text-slate-400">
+            <div class="flex flex-col justify-between gap-3 sm:flex-row sm:items-center">
+                <p>Built with <span class="font-semibold text-aurora-100">Flask</span> &amp; Tailwind � demo only, no real payments.</p>
+                <p class="text-[0.65rem] uppercase tracking-[0.18em] text-slate-500">
+                    Aurora Store � E?commerce Prototype
+                </p>
+            </div>
+        </footer>
+    </div>
+</div>
+</body>
+</html>
+
