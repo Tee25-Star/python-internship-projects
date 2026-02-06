@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+
+{% block title %}Home - Classified Ads Platform{% endblock %}
+
+{% block content %}
+<div class="home-page">
+    <h1>Welcome to Classified Ads Platform</h1>
+    
+    <div class="categories-section">
+        <h2>Browse by Category</h2>
+        <div class="categories-grid">
+            {% for category in categories %}
+                <a href="{{ url_for('category_ads', category_id=category.id) }}" class="category-card">
+                    <h3>{{ category.name }}</h3>
+                    <p>{{ category.description or 'Browse ' + category.name }}</p>
+                </a>
+            {% endfor %}
+        </div>
+    </div>
+
+    <div class="ads-section">
+        <h2>{% if current_category %}Category: {{ current_category.name }}{% else %}Recent Ads{% endif %}</h2>
+        
+        {% if ads.items %}
+            <div class="ads-grid">
+                {% for ad in ads.items %}
+                    <div class="ad-card">
+                        <div class="ad-header">
+                            <h3><a href="{{ url_for('ad_detail', ad_id=ad.id) }}">{{ ad.title }}</a></h3>
+                            <span class="ad-price">${{ "%.2f"|format(ad.price) }}</span>
+                        </div>
+                        <p class="ad-description">{{ ad.description[:150] }}{% if ad.description|length > 150 %}...{% endif %}</p>
+                        <div class="ad-meta">
+                            <span class="ad-location">?? {{ ad.location }}</span>
+                            <span class="ad-category">{{ ad.category.name }}</span>
+                            <span class="ad-date">{{ ad.created_at.strftime('%Y-%m-%d') }}</span>
+                        </div>
+                        <a href="{{ url_for('ad_detail', ad_id=ad.id) }}" class="btn btn-primary">View Details</a>
+                    </div>
+                {% endfor %}
+            </div>
+
+            <div class="pagination">
+                {% if ads.has_prev %}
+                    <a href="{{ url_for('index', page=ads.prev_num) }}" class="btn">Previous</a>
+                {% endif %}
+                <span>Page {{ ads.page }} of {{ ads.pages }}</span>
+                {% if ads.has_next %}
+                    <a href="{{ url_for('index', page=ads.next_num) }}" class="btn">Next</a>
+                {% endif %}
+            </div>
+        {% else %}
+            <p class="no-ads">No ads found. <a href="{{ url_for('create_ad') }}">Be the first to post one!</a></p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

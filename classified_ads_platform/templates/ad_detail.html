@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+
+{% block title %}{{ ad.title }} - Classified Ads Platform{% endblock %}
+
+{% block content %}
+<div class="ad-detail-page">
+    <div class="ad-detail">
+        <div class="ad-header-detail">
+            <h1>{{ ad.title }}</h1>
+            <div class="ad-price-large">${{ "%.2f"|format(ad.price) }}</div>
+        </div>
+
+        <div class="ad-meta-detail">
+            <span class="badge">{{ ad.category.name }}</span>
+            <span>?? {{ ad.location }}</span>
+            <span>?? Posted on {{ ad.created_at.strftime('%B %d, %Y') }}</span>
+            {% if ad.updated_at != ad.created_at %}
+                <span>?? Updated on {{ ad.updated_at.strftime('%B %d, %Y') }}</span>
+            {% endif %}
+        </div>
+
+        <div class="ad-description-detail">
+            <h3>Description</h3>
+            <p style="white-space: pre-wrap;">{{ ad.description }}</p>
+        </div>
+
+        <div class="ad-contact">
+            <h3>Contact Information</h3>
+            <p class="contact-info">{{ ad.contact_info }}</p>
+        </div>
+
+        <div class="ad-author">
+            <p>Posted by: <strong>{{ ad.author.username }}</strong></p>
+        </div>
+
+        {% if current_user.is_authenticated and current_user.id == ad.user_id %}
+            <div class="ad-actions">
+                <a href="{{ url_for('edit_ad', ad_id=ad.id) }}" class="btn btn-primary">Edit Ad</a>
+                <form method="POST" action="{{ url_for('delete_ad', ad_id=ad.id) }}" style="display: inline;" onsubmit="return confirm('Are you sure you want to delete this ad?');">
+                    <button type="submit" class="btn btn-danger">Delete Ad</button>
+                </form>
+            </div>
+        {% endif %}
+
+        <div class="back-link">
+            <a href="{{ url_for('index') }}">? Back to all ads</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

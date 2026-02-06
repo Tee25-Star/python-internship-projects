@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+
+{% block title %}Search Ads - Classified Ads Platform{% endblock %}
+
+{% block content %}
+<div class="search-page">
+    <h1>Search Ads</h1>
+    
+    <div class="search-form-card">
+        <form method="POST" action="{{ url_for('search') }}">
+            {{ form.hidden_tag() }}
+            
+            <div class="form-group">
+                {{ form.query.label(class="form-label") }}
+                {{ form.query(class="form-control", placeholder="Search by title or description...") }}
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    {{ form.category_id.label(class="form-label") }}
+                    {{ form.category_id(class="form-control") }}
+                </div>
+
+                <div class="form-group">
+                    {{ form.location.label(class="form-label") }}
+                    {{ form.location(class="form-control", placeholder="City, State") }}
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    {{ form.min_price.label(class="form-label") }}
+                    {{ form.min_price(class="form-control", type="number", step="0.01", placeholder="0.00") }}
+                </div>
+
+                <div class="form-group">
+                    {{ form.max_price.label(class="form-label") }}
+                    {{ form.max_price(class="form-control", type="number", step="0.01", placeholder="0.00") }}
+                </div>
+            </div>
+
+            <div class="form-group">
+                {{ form.submit(class="btn btn-primary btn-block") }}
+            </div>
+        </form>
+    </div>
+
+    {% if ads is defined %}
+        <div class="search-results">
+            <h2>Search Results ({{ ads|length }} found)</h2>
+            
+            {% if ads %}
+                <div class="ads-grid">
+                    {% for ad in ads %}
+                        <div class="ad-card">
+                            <div class="ad-header">
+                                <h3><a href="{{ url_for('ad_detail', ad_id=ad.id) }}">{{ ad.title }}</a></h3>
+                                <span class="ad-price">${{ "%.2f"|format(ad.price) }}</span>
+                            </div>
+                            <p class="ad-description">{{ ad.description[:150] }}{% if ad.description|length > 150 %}...{% endif %}</p>
+                            <div class="ad-meta">
+                                <span class="ad-location">?? {{ ad.location }}</span>
+                                <span class="ad-category">{{ ad.category.name }}</span>
+                                <span class="ad-date">{{ ad.created_at.strftime('%Y-%m-%d') }}</span>
+                            </div>
+                            <a href="{{ url_for('ad_detail', ad_id=ad.id) }}" class="btn btn-primary">View Details</a>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <p class="no-ads">No ads found matching your search criteria.</p>
+            {% endif %}
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

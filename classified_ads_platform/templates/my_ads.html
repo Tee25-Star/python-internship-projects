@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+
+{% block title %}My Ads - Classified Ads Platform{% endblock %}
+
+{% block content %}
+<div class="my-ads-page">
+    <h1>My Ads</h1>
+    
+    {% if ads %}
+        <div class="ads-grid">
+            {% for ad in ads %}
+                <div class="ad-card">
+                    <div class="ad-header">
+                        <h3><a href="{{ url_for('ad_detail', ad_id=ad.id) }}">{{ ad.title }}</a></h3>
+                        <span class="ad-price">${{ "%.2f"|format(ad.price) }}</span>
+                    </div>
+                    <p class="ad-description">{{ ad.description[:150] }}{% if ad.description|length > 150 %}...{% endif %}</p>
+                    <div class="ad-meta">
+                        <span class="ad-location">?? {{ ad.location }}</span>
+                        <span class="ad-category">{{ ad.category.name }}</span>
+                        <span class="ad-date">{{ ad.created_at.strftime('%Y-%m-%d') }}</span>
+                        {% if not ad.is_active %}
+                            <span class="badge badge-warning">Inactive</span>
+                        {% endif %}
+                    </div>
+                    <div class="ad-actions-small">
+                        <a href="{{ url_for('ad_detail', ad_id=ad.id) }}" class="btn btn-sm">View</a>
+                        <a href="{{ url_for('edit_ad', ad_id=ad.id) }}" class="btn btn-sm btn-secondary">Edit</a>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p class="no-ads">You haven't posted any ads yet. <a href="{{ url_for('create_ad') }}">Create your first ad!</a></p>
+    {% endif %}
+</div>
+{% endblock %}
