@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% block title %}Dashboard — Simple CRM{% endblock %}
+{% block content %}
+<h1>Dashboard</h1>
+<p class="page-desc">Overview of your contacts, companies, and pipeline.</p>
+
+<div class="stats-grid">
+  <div class="stat-card">
+    <div class="value">{{ stats.contacts }}</div>
+    <div class="label">Contacts</div>
+  </div>
+  <div class="stat-card">
+    <div class="value">{{ stats.companies }}</div>
+    <div class="label">Companies</div>
+  </div>
+  <div class="stat-card">
+    <div class="value">{{ stats.deals }}</div>
+    <div class="label">Deals</div>
+  </div>
+  <div class="stat-card highlight">
+    <div class="value money">${{ "%.0f"|format(stats.pipeline or 0) }}</div>
+    <div class="label">Won pipeline</div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-header">
+    <h2>Recent contacts</h2>
+    <a href="{{ url_for('contact_add') }}" class="btn btn-primary btn-sm">Add contact</a>
+  </div>
+  {% if recent %}
+  <ul class="recent-list">
+    {% for c in recent %}
+    <li>
+      <div>
+        <span class="name">{{ c.name }}</span>
+        <div class="meta">{{ c.email or '—' }} · {{ c.phone or '—' }}</div>
+        {% if c.company_name %}<div class="company">{{ c.company_name }}</div>{% endif %}
+      </div>
+      <div class="actions">
+        <a href="{{ url_for('contact_edit', id=c.id) }}" class="btn btn-ghost btn-sm">Edit</a>
+      </div>
+    </li>
+    {% endfor %}
+  </ul>
+  {% else %}
+  <div class="empty-state">
+    <p>No contacts yet.</p>
+    <a href="{{ url_for('contact_add') }}" class="btn btn-primary">Add your first contact</a>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% block title %}{{ 'Edit' if deal else 'Add' }} Deal — Simple CRM{% endblock %}
+{% block content %}
+<div class="page-header">
+  <div>
+    <h1>{{ 'Edit deal' if deal else 'Add deal' }}</h1>
+    <p class="page-desc">{{ 'Update deal and stage.' if deal else 'Create a new opportunity and link to a contact.' }}</p>
+  </div>
+  <a href="{{ url_for('deals_list') }}" class="btn btn-ghost">Back to deals</a>
+</div>
+
+<div class="card" style="max-width: 560px;">
+  <div style="padding: 1.5rem 1.25rem;">
+    <form method="post">
+      <div class="form-group">
+        <label for="title">Deal title *</label>
+        <input type="text" id="title" name="title" required value="{{ deal.title if deal else '' }}" placeholder="e.g. Q1 Enterprise License">
+      </div>
+      <div class="form-group">
+        <label for="contact_id">Contact</label>
+        <select id="contact_id" name="contact_id">
+          <option value="">— No contact —</option>
+          {% for c in contacts %}
+          <option value="{{ c.id }}" {{ 'selected' if deal and deal.contact_id == c.id else '' }}>
+            {{ c.name }}{% if c.company_name %} ({{ c.company_name }}){% endif %}
+          </option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="value">Value ($)</label>
+        <input type="number" id="value" name="value" step="0.01" min="0" value="{{ deal.value if deal else '' }}" placeholder="0.00">
+      </div>
+      <div class="form-group">
+        <label for="stage">Stage</label>
+        <select id="stage" name="stage">
+          <option value="lead" {{ 'selected' if deal and deal.stage == 'lead' else '' }}>Lead</option>
+          <option value="qualified" {{ 'selected' if deal and deal.stage == 'qualified' else '' }}>Qualified</option>
+          <option value="proposal" {{ 'selected' if deal and deal.stage == 'proposal' else '' }}>Proposal</option>
+          <option value="negotiation" {{ 'selected' if deal and deal.stage == 'negotiation' else '' }}>Negotiation</option>
+          <option value="won" {{ 'selected' if deal and deal.stage == 'won' else '' }}>Won</option>
+          <option value="lost" {{ 'selected' if deal and deal.stage == 'lost' else '' }}>Lost</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="expected_close">Expected close date</label>
+        <input type="date" id="expected_close" name="expected_close" value="{{ deal.expected_close if deal and deal.expected_close else '' }}">
+      </div>
+      <div class="form-group">
+        <label for="notes">Notes</label>
+        <textarea id="notes" name="notes" placeholder="Deal notes…">{{ deal.notes if deal else '' }}</textarea>
+      </div>
+      <div class="form-actions">
+        <button type="submit" class="btn btn-primary">{{ 'Save changes' if deal else 'Add deal' }}</button>
+        <a href="{{ url_for('deals_list') }}" class="btn btn-ghost">Cancel</a>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}

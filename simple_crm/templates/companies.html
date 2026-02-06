@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% block title %}Companies — Simple CRM{% endblock %}
+{% block content %}
+<div class="page-header">
+  <div>
+    <h1>Companies</h1>
+    <p class="page-desc">Manage organizations you work with.</p>
+  </div>
+  <a href="{{ url_for('company_add') }}" class="btn btn-primary">Add company</a>
+</div>
+
+<div class="card">
+  {% if companies %}
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Industry</th>
+          <th>Contact</th>
+          <th>Contacts</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for c in companies %}
+        <tr>
+          <td><strong>{{ c.name }}</strong></td>
+          <td>{{ c.industry or '—' }}</td>
+          <td>{{ c.email or c.phone or '—' }}</td>
+          <td>{{ c.contact_count }}</td>
+          <td>
+            <div class="actions">
+              <a href="{{ url_for('company_edit', id=c.id) }}" class="btn btn-ghost btn-sm">Edit</a>
+              <form class="inline" method="post" action="{{ url_for('company_delete', id=c.id) }}" onsubmit="return confirm('Delete this company?');">
+                <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+              </form>
+            </div>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% else %}
+  <div class="empty-state">
+    <p>No companies yet. Add one to get started.</p>
+    <a href="{{ url_for('company_add') }}" class="btn btn-primary">Add company</a>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}

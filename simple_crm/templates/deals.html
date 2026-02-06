@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% block title %}Deals — Simple CRM{% endblock %}
+{% block content %}
+<div class="page-header">
+  <div>
+    <h1>Deals</h1>
+    <p class="page-desc">Track opportunities and pipeline.</p>
+  </div>
+  <a href="{{ url_for('deal_add') }}" class="btn btn-primary">Add deal</a>
+</div>
+
+<div class="card">
+  {% if deals %}
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Deal</th>
+          <th>Contact</th>
+          <th>Company</th>
+          <th>Value</th>
+          <th>Stage</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for d in deals %}
+        <tr>
+          <td><strong>{{ d.title }}</strong></td>
+          <td>{{ d.contact_name or '—' }}</td>
+          <td>{{ d.company_name or '—' }}</td>
+          <td class="money">${{ "%.2f"|format(d.value or 0) }}</td>
+          <td><span class="badge badge-{{ d.stage }}">{{ d.stage }}</span></td>
+          <td>
+            <div class="actions">
+              <a href="{{ url_for('deal_edit', id=d.id) }}" class="btn btn-ghost btn-sm">Edit</a>
+              <form class="inline" method="post" action="{{ url_for('deal_delete', id=d.id) }}" onsubmit="return confirm('Delete this deal?');">
+                <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+              </form>
+            </div>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% else %}
+  <div class="empty-state">
+    <p>No deals yet. Add one to track your pipeline.</p>
+    <a href="{{ url_for('deal_add') }}" class="btn btn-primary">Add deal</a>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}

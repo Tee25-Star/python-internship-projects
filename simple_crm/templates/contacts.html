@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+{% block title %}Contacts — Simple CRM{% endblock %}
+{% block content %}
+<div class="page-header">
+  <div>
+    <h1>Contacts</h1>
+    <p class="page-desc">People you work with across companies.</p>
+  </div>
+  <a href="{{ url_for('contact_add') }}" class="btn btn-primary">Add contact</a>
+</div>
+
+<form method="get" class="search-bar">
+  <input type="search" name="q" value="{{ search }}" placeholder="Search by name, email, or company…">
+  <button type="submit" class="btn btn-ghost">Search</button>
+</form>
+
+<div class="card">
+  {% if contacts %}
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Company</th>
+          <th>Email</th>
+          <th>Phone</th>
+          <th>Role</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for c in contacts %}
+        <tr>
+          <td><strong>{{ c.name }}</strong></td>
+          <td>{{ c.company_name or '—' }}</td>
+          <td>{{ c.email or '—' }}</td>
+          <td>{{ c.phone or '—' }}</td>
+          <td>{{ c.role or '—' }}</td>
+          <td>
+            <div class="actions">
+              <a href="{{ url_for('contact_edit', id=c.id) }}" class="btn btn-ghost btn-sm">Edit</a>
+              <form class="inline" method="post" action="{{ url_for('contact_delete', id=c.id) }}" onsubmit="return confirm('Delete this contact?');">
+                <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+              </form>
+            </div>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% else %}
+  <div class="empty-state">
+    <p>{% if search %}No contacts match "{{ search }}".{% else %}No contacts yet.{% endif %}</p>
+    <a href="{{ url_for('contact_add') }}" class="btn btn-primary">Add contact</a>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}
