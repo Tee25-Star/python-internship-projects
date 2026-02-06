@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Service Request System</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-content">
+                <div class="logo">
+                    <i class="fas fa-ticket-alt"></i>
+                    <h1>TicketMaster</h1>
+                </div>
+                <div class="header-actions">
+                    <button class="btn-primary" id="newTicketBtn">
+                        <i class="fas fa-plus"></i> New Ticket
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Stats Dashboard -->
+        <section class="stats-section">
+            <div class="stats-grid">
+                <div class="stat-card stat-total">
+                    <div class="stat-icon">
+                        <i class="fas fa-tickets"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3 id="stat-total">0</h3>
+                        <p>Total Tickets</p>
+                    </div>
+                </div>
+                <div class="stat-card stat-open">
+                    <div class="stat-icon">
+                        <i class="fas fa-circle-notch"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3 id="stat-open">0</h3>
+                        <p>Open</p>
+                    </div>
+                </div>
+                <div class="stat-card stat-progress">
+                    <div class="stat-icon">
+                        <i class="fas fa-spinner"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3 id="stat-progress">0</h3>
+                        <p>In Progress</p>
+                    </div>
+                </div>
+                <div class="stat-card stat-resolved">
+                    <div class="stat-icon">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3 id="stat-resolved">0</h3>
+                        <p>Resolved</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Filters -->
+        <section class="filters-section">
+            <div class="filters">
+                <div class="filter-group">
+                    <label>Status:</label>
+                    <select id="statusFilter" class="filter-select">
+                        <option value="all">All</option>
+                        <option value="open">Open</option>
+                        <option value="in_progress">In Progress</option>
+                        <option value="resolved">Resolved</option>
+                        <option value="closed">Closed</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label>Priority:</label>
+                    <select id="priorityFilter" class="filter-select">
+                        <option value="all">All</option>
+                        <option value="high">High</option>
+                        <option value="medium">Medium</option>
+                        <option value="low">Low</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label>Search:</label>
+                    <input type="text" id="searchInput" class="filter-input" placeholder="Search tickets...">
+                </div>
+            </div>
+        </section>
+
+        <!-- Tickets Grid -->
+        <section class="tickets-section">
+            <div class="tickets-grid" id="ticketsGrid">
+                <!-- Tickets will be dynamically inserted here -->
+            </div>
+        </section>
+    </div>
+
+    <!-- New Ticket Modal -->
+    <div class="modal" id="newTicketModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Create New Ticket</h2>
+                <button class="modal-close" id="closeNewTicketModal">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <form id="newTicketForm">
+                <div class="form-group">
+                    <label for="ticketTitle">Title *</label>
+                    <input type="text" id="ticketTitle" required placeholder="Enter ticket title">
+                </div>
+                <div class="form-group">
+                    <label for="ticketRequester">Requester *</label>
+                    <input type="text" id="ticketRequester" required placeholder="Your name">
+                </div>
+                <div class="form-group">
+                    <label for="ticketCategory">Category</label>
+                    <select id="ticketCategory">
+                        <option value="general">General</option>
+                        <option value="technical">Technical</option>
+                        <option value="billing">Billing</option>
+                        <option value="support">Support</option>
+                        <option value="feature">Feature Request</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="ticketPriority">Priority</label>
+                    <select id="ticketPriority">
+                        <option value="low">Low</option>
+                        <option value="medium" selected>Medium</option>
+                        <option value="high">High</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="ticketDescription">Description *</label>
+                    <textarea id="ticketDescription" required rows="5" placeholder="Describe your issue or request..."></textarea>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn-secondary" id="cancelNewTicket">Cancel</button>
+                    <button type="submit" class="btn-primary">Create Ticket</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Ticket Detail Modal -->
+    <div class="modal" id="ticketDetailModal">
+        <div class="modal-content modal-large">
+            <div class="modal-header">
+                <h2 id="detailTitle">Ticket Details</h2>
+                <button class="modal-close" id="closeDetailModal">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="ticket-detail-content" id="ticketDetailContent">
+                <!-- Ticket details will be inserted here -->
+            </div>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>

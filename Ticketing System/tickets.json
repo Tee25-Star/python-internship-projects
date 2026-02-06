@@ -1,0 +1,15 @@
+[
+  {
+    "id": "82252069-7fcc-4625-a3b2-ed630348215c",
+    "title": "tttt",
+    "description": "maiwe",
+    "priority": "low",
+    "status": "open",
+    "category": "technical",
+    "requester": "tccc",
+    "created_at": "2026-01-24T17:19:04.495601",
+    "updated_at": "2026-01-24T17:19:04.495601",
+    "assigned_to": null,
+    "comments": []
+  }
+]
