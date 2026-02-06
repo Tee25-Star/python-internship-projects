@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <section class="section thanks">
+    <div class="card reveal">
+      <div class="mono muted">message received</div>
+      <h1 class="h2">Thanks - I'll get back to you.</h1>
+      <p class="muted">
+        Your message was saved to <span class="mono">data/messages.json</span>.
+      </p>
+      <div class="hero-cta">
+        <a class="btn btn-primary" href="{{ url_for('index') }}"><span class="mono">back home</span></a>
+        <a class="btn btn-ghost" href="#projects"><span class="mono">projects</span></a>
+      </div>
+    </div>
+  </section>
+{% endblock %}

@@ -1,0 +1,41 @@
+[
+  {
+    "title": "Classified Ads Platform",
+    "tagline": "Full-stack app with auth, listings, search, and clean UI.",
+    "year": "2025",
+    "stack": ["Python", "Flask", "SQLAlchemy", "HTML", "CSS"],
+    "impact": [
+      "Implemented login, posting, search, and profile pages",
+      "Designed a responsive layout and reusable templates"
+    ],
+    "links": [
+      { "label": "Repo", "url": "https://github.com/your-username/classified-ads" },
+      { "label": "Live", "url": "https://example.com" }
+    ],
+    "featured": true
+  },
+  {
+    "title": "Ticketing System",
+    "tagline": "Issue tracking workflow with statuses, filters, and dashboards.",
+    "year": "2025",
+    "stack": ["Python", "Flask", "SQLite", "Bootstrap"],
+    "impact": [
+      "Built CRUD tickets with status lifecycle",
+      "Added filtering and clean navigation"
+    ],
+    "links": [{ "label": "Repo", "url": "https://github.com/your-username/ticketing-system" }],
+    "featured": true
+  },
+  {
+    "title": "Live Chat System",
+    "tagline": "Real-time messaging prototype with a minimal UI.",
+    "year": "2024",
+    "stack": ["Python", "Sockets"],
+    "impact": [
+      "Designed message protocol and client/server flow",
+      "Handled reconnect logic and message history"
+    ],
+    "links": [{ "label": "Repo", "url": "https://github.com/your-username/live-chat" }],
+    "featured": false
+  }
+]

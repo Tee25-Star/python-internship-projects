@@ -1,0 +1,220 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <section class="hero section">
+    <div class="hero-left">
+      <div class="kicker mono reveal">
+        <span class="pill">available for work</span>
+        <span class="sep">/</span>
+        <span class="muted">{{ profile.location or "Remote" }}</span>
+      </div>
+
+      <h1 class="title reveal">
+        <span class="muted">Hi, I'm</span>
+        <span class="shine">{{ profile.name or "Your Name" }}</span>
+        <span class="muted">-</span>
+        <span class="role" id="roleText">Developer</span>
+        <span class="cursor" aria-hidden="true"></span>
+      </h1>
+
+      <p class="subtitle reveal">
+        {{ profile.about or "I build clean, fast, human-friendly software with premium UI polish." }}
+      </p>
+
+      <div class="hero-cta reveal">
+        <a class="btn btn-primary" href="#projects"><span class="mono">view projects</span></a>
+        <a class="btn btn-ghost" href="#contact"><span class="mono">contact</span></a>
+        <a class="btn btn-ghost" href="{{ (profile.socials or [])[0].url if (profile.socials or []) else '#' }}" target="_blank" rel="noreferrer">
+          <span class="mono">social</span>
+        </a>
+      </div>
+
+      <div class="stats reveal">
+        <div class="stat">
+          <div class="stat-top">
+            <div class="dot"></div>
+            <div class="mono muted">focus</div>
+          </div>
+          <div class="stat-value">Clean builds + standout UI</div>
+        </div>
+        <div class="stat">
+          <div class="stat-top">
+            <div class="dot"></div>
+            <div class="mono muted">strength</div>
+          </div>
+          <div class="stat-value">Python, web apps, automation</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="hero-right reveal">
+      <div class="hero-card tilt">
+        <div class="hero-card-top">
+          <div class="mono muted">selected highlights</div>
+          <div class="chips">
+            <span class="chip">fast</span>
+            <span class="chip">reliable</span>
+            <span class="chip">polished</span>
+          </div>
+        </div>
+        <div class="hero-card-body">
+          <ul class="checklist">
+            {% for h in (profile.highlights or []) %}
+              <li><span class="check">&#10003;</span> {{ h }}</li>
+            {% endfor %}
+          </ul>
+          <div class="mini-terminal">
+            <div class="mini-bar">
+              <span class="dot r"></span><span class="dot y"></span><span class="dot g"></span>
+              <span class="mono muted">status</span>
+            </div>
+            <pre class="mono">$ python -m pip install flask
+$ python app.py
+ * Running on http://127.0.0.1:5000</pre>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="projects" class="section">
+    <div class="section-head">
+      <h2 class="h2 reveal">Projects</h2>
+      <div class="tools reveal">
+        <input id="projectSearch" class="input" type="search" placeholder="Search projects (title / stack)..." />
+        <button class="btn btn-ghost" id="onlyFeatured" type="button"><span class="mono">featured</span></button>
+      </div>
+    </div>
+
+    <div class="grid" id="projectGrid">
+      {% for p in (projects or []) %}
+        <article class="card project tilt reveal"
+          data-title="{{ (p.title or '') | lower }}"
+          data-stack="{{ (p.stack or []) | join(' ') | lower }}"
+          data-featured="{{ '1' if p.featured else '0' }}"
+        >
+          <div class="card-top">
+            <div>
+              <h3 class="h3">{{ p.title }}</h3>
+              <div class="muted">{{ p.tagline }}</div>
+            </div>
+            <div class="badge mono">{{ p.year or "" }}</div>
+          </div>
+
+          <div class="stack">
+            {% for t in (p.stack or []) %}
+              <span class="tag">{{ t }}</span>
+            {% endfor %}
+          </div>
+
+          {% if p.impact %}
+            <ul class="bullets">
+              {% for i in p.impact %}
+                <li>{{ i }}</li>
+              {% endfor %}
+            </ul>
+          {% endif %}
+
+          <div class="card-actions">
+            {% for l in (p.links or []) %}
+              <a class="link" href="{{ l.url }}" target="_blank" rel="noreferrer">
+                <span class="mono">{{ l.label }}</span>
+                <span aria-hidden="true">&rarr;</span>
+              </a>
+            {% endfor %}
+          </div>
+        </article>
+      {% endfor %}
+    </div>
+  </section>
+
+  <section id="skills" class="section">
+    <div class="section-head">
+      <h2 class="h2 reveal">Skills</h2>
+      <p class="muted reveal">A snapshot of what I use to build and ship.</p>
+    </div>
+
+    <div class="grid skills-grid">
+      {% for group, items in (profile.skills or {}).items() %}
+        <div class="card reveal">
+          <div class="card-top">
+            <h3 class="h3">{{ group }}</h3>
+            <div class="badge mono">core</div>
+          </div>
+          <div class="stack">
+            {% for s in items %}
+              <span class="tag">{{ s }}</span>
+            {% endfor %}
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  </section>
+
+  <section id="about" class="section">
+    <div class="section-head">
+      <h2 class="h2 reveal">About</h2>
+      <p class="muted reveal">A short timeline of wins.</p>
+    </div>
+
+    <div class="timeline">
+      {% for t in (profile.timeline or []) %}
+        <div class="titem card reveal">
+          <div class="tleft">
+            <div class="t-dot"></div>
+            <div class="t-line"></div>
+          </div>
+          <div class="tright">
+            <div class="t-title">{{ t.title }}</div>
+            <div class="mono muted">{{ t.meta }}</div>
+            <div class="t-details">{{ t.details }}</div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  </section>
+
+  <section id="contact" class="section">
+    <div class="section-head">
+      <h2 class="h2 reveal">Contact</h2>
+      <p class="muted reveal">Send a message - it will be saved locally on your PC.</p>
+    </div>
+
+    {% if form_error %}
+      <div class="alert reveal">{{ form_error }}</div>
+    {% endif %}
+
+    <div class="contact-grid">
+      <form class="card form reveal" action="{{ url_for('contact') }}" method="post">
+        <label class="label">
+          <span class="mono muted">name</span>
+          <input class="input" name="name" autocomplete="name" required />
+        </label>
+        <label class="label">
+          <span class="mono muted">email</span>
+          <input class="input" type="email" name="email" autocomplete="email" required />
+        </label>
+        <label class="label">
+          <span class="mono muted">message</span>
+          <textarea class="input textarea" name="message" rows="6" required></textarea>
+        </label>
+        <button class="btn btn-primary" type="submit"><span class="mono">send</span></button>
+        <div class="form-hint muted">
+          Tip: edit your name, links, and projects in <span class="mono">data/profile.json</span> and <span class="mono">data/projects.json</span>.
+        </div>
+      </form>
+
+      <aside class="card reveal">
+        <div class="mono muted">quick links</div>
+        <div class="quicklinks">
+          {% for s in (profile.socials or []) %}
+            <a class="ql" href="{{ s.url }}" target="_blank" rel="noreferrer">
+              <span>{{ s.label }}</span>
+              <span class="mono muted">{{ s.url }}</span>
+            </a>
+          {% endfor %}
+        </div>
+      </aside>
+    </div>
+  </section>
+{% endblock %}

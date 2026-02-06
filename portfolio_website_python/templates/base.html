@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{{ (profile.name or "Portfolio") ~ " - Developer Portfolio" }}</title>
+    <meta name="description" content="Personal developer portfolio website." />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=JetBrains+Mono:wght@400;600&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}" />
+  </head>
+  <body>
+    <div class="bg">
+      <div class="blob b1"></div>
+      <div class="blob b2"></div>
+      <div class="blob b3"></div>
+      <div class="grain"></div>
+    </div>
+
+    <header class="topbar">
+      <a class="brand" href="#top" aria-label="Go to top">
+        <span class="brand-mark">&#9670;</span>
+        <span class="brand-text">{{ profile.name or "Your Name" }}</span>
+      </a>
+
+      <nav class="nav">
+        <a href="#projects">Projects</a>
+        <a href="#skills">Skills</a>
+        <a href="#about">About</a>
+        <a href="#contact">Contact</a>
+      </nav>
+
+      <div class="actions">
+        <button class="btn btn-ghost" id="themeToggle" type="button" aria-label="Toggle theme">
+          <span class="mono">theme</span>
+        </button>
+        <a class="btn btn-primary" href="#contact">
+          <span class="mono">hire me</span>
+        </a>
+      </div>
+    </header>
+
+    <main id="top">
+      {% block content %}{% endblock %}
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        <div class="mono">&copy; <span id="year"></span> {{ profile.name or "Your Name" }}</div>
+        <div class="footer-links">
+          {% for s in (profile.socials or []) %}
+            <a href="{{ s.url }}" target="_blank" rel="noreferrer">{{ s.label }}</a>
+          {% endfor %}
+        </div>
+      </div>
+    </footer>
+
+    <script>
+      window.__PROFILE__ = {{ (profile or {}) | tojson }};
+      window.__PROJECTS__ = {{ (projects or []) | tojson }};
+    </script>
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+  </body>
+</html>

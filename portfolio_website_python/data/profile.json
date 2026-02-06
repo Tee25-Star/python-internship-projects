@@ -1,0 +1,41 @@
+{
+  "name": "Treasure",
+  "headline": "Developer ù Builder ù Problem Solver",
+  "location": "Your City, Your Country",
+  "email": "you@example.com",
+  "roles": [
+    "Python Developer",
+    "Full-Stack Builder",
+    "Automation Engineer",
+    "UI/UX Explorer"
+  ],
+  "about": "I build fast, clean, human-friendly software. I enjoy turning ideas into productsùespecially when the interface looks and feels premium.",
+  "highlights": [
+    "Strong Python + web fundamentals",
+    "Clean architecture and readable code",
+    "Modern, responsive UI and animations"
+  ],
+  "socials": [
+    { "label": "GitHub", "url": "https://github.com/your-username" },
+    { "label": "LinkedIn", "url": "https://linkedin.com/in/your-handle" },
+    { "label": "Email", "url": "mailto:you@example.com" }
+  ],
+  "skills": {
+    "Languages": ["Python", "JavaScript", "HTML", "CSS", "SQL"],
+    "Frameworks": ["Flask", "Django", "React"],
+    "Tools": ["Git", "Docker", "Postman", "Figma"],
+    "Strengths": ["APIs", "Automation", "UI polish", "Debugging"]
+  },
+  "timeline": [
+    {
+      "title": "Built a portfolio platform",
+      "meta": "2026 ù Personal",
+      "details": "Designed a modern glassmorphism UI with animated gradients and interactive project cards."
+    },
+    {
+      "title": "Shipped a real-world web app",
+      "meta": "2025 ù Project",
+      "details": "Implemented authentication, CRUD, search, and clean deployment workflow."
+    }
+  ]
+}
