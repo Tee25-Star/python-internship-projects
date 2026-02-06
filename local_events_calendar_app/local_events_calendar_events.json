@@ -1,0 +1,32 @@
+[
+  {
+    "id": "a96e86cd-576f-4cc7-83d0-1ad6d9174ce8",
+    "title": "Community Cleanup @ Riverside Park",
+    "event_date": "2026-01-29",
+    "start_time": "09:00",
+    "end_time": "11:30",
+    "location": "Riverside Park",
+    "category": "Community",
+    "description": "Meet at the main gate. Gloves & bags provided. Bring water!"
+  },
+  {
+    "id": "830f576d-e0f4-4baf-b44c-351823dcc041",
+    "title": "Local Food Truck Night",
+    "event_date": "2026-01-30",
+    "start_time": "17:30",
+    "end_time": "21:00",
+    "location": "Downtown Square",
+    "category": "Food",
+    "description": "Live DJ set, family-friendly. Try the new vendors!"
+  },
+  {
+    "id": "3ec16b75-8124-46ae-8fc3-230b82e3bc40",
+    "title": "Open Mic: Poetry & Stories",
+    "event_date": "2026-02-01",
+    "start_time": "19:00",
+    "end_time": "21:00",
+    "location": "Cedar Street Cafe",
+    "category": "Arts",
+    "description": "Sign-up starts at 6:30pm. 5 minutes per performer."
+  }
+]
