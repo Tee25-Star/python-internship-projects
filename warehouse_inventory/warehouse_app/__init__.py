@@ -1,0 +1,2 @@
+"""Warehouse management application package."""
+
