@@ -1,0 +1,121 @@
+{% extends "base.html" %}
+
+{% block title %}{{ assignment.title }} - Homework System{% endblock %}
+
+{% block content %}
+<div class="card shadow-lg border-0 mb-4">
+    <div class="card-body p-4">
+        <h2 class="mb-3">
+            <i class="bi bi-file-text text-primary"></i> {{ assignment.title }}
+        </h2>
+        
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <p class="text-muted mb-2">
+                    <i class="bi bi-calendar-event"></i> <strong>Due Date:</strong> 
+                    {{ assignment.due_date.strftime('%B %d, %Y at %I:%M %p') }}
+                </p>
+                <p class="text-muted mb-2">
+                    <i class="bi bi-star"></i> <strong>Maximum Points:</strong> {{ assignment.max_points }}
+                </p>
+                <p class="text-muted mb-2">
+                    <i class="bi bi-person"></i> <strong>Teacher:</strong> {{ assignment.teacher.username }}
+                </p>
+            </div>
+            <div class="col-md-6">
+                {% if assignment.file_path %}
+                <p class="mb-2">
+                    <a href="{{ url_for('download_file', filename=assignment.file_path.replace('uploads/', '')) }}" class="btn btn-outline-primary">
+                        <i class="bi bi-download"></i> Download Assignment File
+                    </a>
+                </p>
+                {% endif %}
+            </div>
+        </div>
+
+        <hr>
+
+        <h5 class="mb-3">Description</h5>
+        <p class="text-muted">{{ assignment.description|replace('\n', '<br>')|safe }}</p>
+    </div>
+</div>
+
+{% if user.role == 'student' %}
+    {% if submission %}
+        <div class="card shadow-sm border-success mb-4">
+            <div class="card-body">
+                <h5 class="card-title text-success">
+                    <i class="bi bi-check-circle"></i> Submission Status
+                </h5>
+                <p class="mb-2">
+                    <strong>Submitted on:</strong> {{ submission.submitted_at.strftime('%B %d, %Y at %I:%M %p') }}
+                </p>
+                {% if submission.file_path %}
+                <p class="mb-2">
+                    <a href="{{ url_for('download_file', filename=submission.file_path.replace('uploads/', '')) }}" class="btn btn-sm btn-outline-primary">
+                        <i class="bi bi-download"></i> Download Your Submission
+                    </a>
+                </p>
+                {% endif %}
+                
+                {% if grade %}
+                <hr>
+                <h6 class="text-primary">Grade</h6>
+                <div class="alert alert-success">
+                    <h4 class="mb-2">{{ grade.points }}/{{ assignment.max_points }} points</h4>
+                    {% if grade.feedback %}
+                    <p class="mb-0"><strong>Feedback:</strong> {{ grade.feedback }}</p>
+                    {% endif %}
+                    <small class="text-muted">Graded on: {{ grade.graded_at.strftime('%B %d, %Y at %I:%M %p') }}</small>
+                </div>
+                {% else %}
+                <div class="alert alert-info mt-2">
+                    <i class="bi bi-hourglass-split"></i> Your submission is awaiting grading.
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    {% else %}
+        {% if assignment.due_date > now() %}
+        <div class="card shadow-sm border-primary">
+            <div class="card-body">
+                <h5 class="card-title">
+                    <i class="bi bi-upload"></i> Submit Assignment
+                </h5>
+                <form method="POST" action="{{ url_for('submit_assignment', assignment_id=assignment.id) }}" enctype="multipart/form-data">
+                    <div class="mb-3">
+                        <label for="file" class="form-label">Upload Your Work</label>
+                        <input type="file" class="form-control" id="file" name="file" required accept=".pdf,.doc,.docx,.txt,.zip,.rar">
+                        <small class="form-text text-muted">Supported formats: PDF, DOC, DOCX, TXT, ZIP, RAR (Max 16MB)</small>
+                    </div>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-upload"></i> Submit Assignment
+                    </button>
+                </form>
+            </div>
+        </div>
+        {% else %}
+        <div class="alert alert-danger">
+            <i class="bi bi-exclamation-triangle"></i> The due date for this assignment has passed. Submissions are no longer accepted.
+        </div>
+        {% endif %}
+    {% endif %}
+{% endif %}
+
+<div class="mt-4">
+    <a href="{{ url_for('dashboard') }}" class="btn btn-outline-secondary">
+        <i class="bi bi-arrow-left"></i> Back to Dashboard
+    </a>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // Set minimum datetime to now for due date input
+    document.addEventListener('DOMContentLoaded', function() {
+        const now = new Date();
+        now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
+        document.getElementById('due_date')?.setAttribute('min', now.toISOString().slice(0, 16));
+    });
+</script>
+{% endblock %}

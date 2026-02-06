@@ -1,0 +1,157 @@
+:root {
+    --primary-color: #0d6efd;
+    --secondary-color: #6c757d;
+    --success-color: #198754;
+    --danger-color: #dc3545;
+    --warning-color: #ffc107;
+    --info-color: #0dcaf0;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    min-height: 100vh;
+}
+
+.navbar {
+    box-shadow: 0 2px 4px rgba(0,0,0,.1);
+}
+
+.card {
+    border-radius: 10px;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,.15) !important;
+}
+
+.hero-section {
+    padding: 60px 0;
+}
+
+.btn {
+    border-radius: 8px;
+    padding: 10px 20px;
+    font-weight: 500;
+    transition: all 0.3s;
+}
+
+.btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0,0,0,.2);
+}
+
+.form-control, .form-select {
+    border-radius: 8px;
+    border: 1px solid #dee2e6;
+    padding: 12px;
+}
+
+.form-control:focus, .form-select:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
+}
+
+.alert {
+    border-radius: 8px;
+    border: none;
+}
+
+.badge {
+    padding: 6px 12px;
+    border-radius: 6px;
+}
+
+.table {
+    background: white;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.table thead {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+}
+
+.table tbody tr {
+    transition: background-color 0.2s;
+}
+
+.table tbody tr:hover {
+    background-color: #f8f9fa;
+}
+
+footer {
+    margin-top: auto;
+}
+
+.modal-content {
+    border-radius: 10px;
+    border: none;
+}
+
+.modal-header {
+    border-bottom: 1px solid #dee2e6;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border-radius: 10px 10px 0 0;
+}
+
+.modal-header .btn-close {
+    filter: invert(1);
+}
+
+.shadow-sm {
+    box-shadow: 0 .125rem .25rem rgba(0,0,0,.075) !important;
+}
+
+.shadow-lg {
+    box-shadow: 0 1rem 3rem rgba(0,0,0,.175) !important;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+    width: 10px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
+
+/* Animation for cards */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.card {
+    animation: fadeIn 0.5s ease-out;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .hero-section {
+        padding: 40px 0;
+    }
+    
+    .display-4 {
+        font-size: 2rem;
+    }
+}
