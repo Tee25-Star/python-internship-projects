@@ -1,0 +1,121 @@
+{
+  "meta": {
+    "app": "TeamFlow",
+    "created_at": "2026-01-28 14:43:31",
+    "updated_at": "2026-01-28 14:43:31"
+  },
+  "next_ids": {
+    "project": 3,
+    "task": 6,
+    "member": 4
+  },
+  "members": [
+    {
+      "id": 1,
+      "name": "Amina K.",
+      "role": "Project Manager",
+      "email": "amina@example.com",
+      "created_at": "2026-01-28 14:43:31"
+    },
+    {
+      "id": 2,
+      "name": "Jay O.",
+      "role": "Backend Dev",
+      "email": "jay@example.com",
+      "created_at": "2026-01-28 14:43:31"
+    },
+    {
+      "id": 3,
+      "name": "Lebo S.",
+      "role": "UI/UX",
+      "email": "lebo@example.com",
+      "created_at": "2026-01-28 14:43:31"
+    }
+  ],
+  "projects": [
+    {
+      "id": 1,
+      "name": "TeamFlow MVP",
+      "description": "Build the first working version of the app.",
+      "owner_member_id": 1,
+      "status": "Active",
+      "start_date": "2026-01-10",
+      "end_date": "2026-02-10",
+      "created_at": "2026-01-28 14:43:31",
+      "updated_at": "2026-01-28 14:43:31"
+    },
+    {
+      "id": 2,
+      "name": "Marketing Website",
+      "description": "Landing page + onboarding docs.",
+      "owner_member_id": 3,
+      "status": "Planning",
+      "start_date": "2026-01-20",
+      "end_date": "2026-02-05",
+      "created_at": "2026-01-28 14:43:31",
+      "updated_at": "2026-01-28 14:43:31"
+    }
+  ],
+  "tasks": [
+    {
+      "id": 1,
+      "project_id": 1,
+      "title": "Define requirements & scope",
+      "assignee_member_id": 1,
+      "priority": "High",
+      "status": "Done",
+      "due_date": "2026-01-12",
+      "notes": "Capture core flows: projects, tasks, members, dashboard.",
+      "created_at": "2026-01-28 14:43:31",
+      "updated_at": "2026-01-28 14:43:31"
+    },
+    {
+      "id": 2,
+      "project_id": 1,
+      "title": "Design standout UI layout",
+      "assignee_member_id": 3,
+      "priority": "High",
+      "status": "In Progress",
+      "due_date": "2026-01-29",
+      "notes": "Sidebar + cards + modern dark theme.",
+      "created_at": "2026-01-28 14:43:31",
+      "updated_at": "2026-01-28 14:43:31"
+    },
+    {
+      "id": 3,
+      "project_id": 1,
+      "title": "Implement JSON persistence",
+      "assignee_member_id": 2,
+      "priority": "Medium",
+      "status": "Todo",
+      "due_date": "2026-01-31",
+      "notes": "Atomic writes; safe load fallback.",
+      "created_at": "2026-01-28 14:43:31",
+      "updated_at": "2026-01-28 14:43:31"
+    },
+    {
+      "id": 4,
+      "project_id": 2,
+      "title": "Write hero copy + feature bullets",
+      "assignee_member_id": 1,
+      "priority": "Low",
+      "status": "Todo",
+      "due_date": "2026-02-02",
+      "notes": "",
+      "created_at": "2026-01-28 14:43:31",
+      "updated_at": "2026-01-28 14:43:31"
+    },
+    {
+      "id": 5,
+      "project_id": 2,
+      "title": "Draft onboarding checklist",
+      "assignee_member_id": 3,
+      "priority": "Medium",
+      "status": "Todo",
+      "due_date": "2026-02-03",
+      "notes": "",
+      "created_at": "2026-01-28 14:43:31",
+      "updated_at": "2026-01-28 14:43:31"
+    }
+  ]
+}
